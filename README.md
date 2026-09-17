@@ -22,7 +22,7 @@ The eight steps, in the order the coach enforces: clarify the problem, break dow
 
 ## How it is built
 
-Small on purpose. Five source files, no database, no external services beyond the model endpoint you configure.
+Small on purpose. About ten short source files, no database, no external services beyond the model endpoint you configure.
 
 ```
 skill/SKILL.md            The coach. Plain markdown; the whole behavior lives here.
@@ -202,7 +202,7 @@ az webapp log config --name <app service name> --resource-group <resource group>
 az webapp log tail --name <app service name> --resource-group <resource group>
 ```
 
-The startup line looks like `[skill] loaded .../skill/SKILL.md (6316 chars)`. If it says the skill file was not found, the deploy did not include the `skill/` folder.
+The startup line looks like `[skill] loaded .../skill/SKILL.md (7813 chars)`; the number is the file's size and changes with each skill update. If it says the skill file was not found, the deploy did not include the `skill/` folder.
 
 ## Sessions and memory: what happens without storage
 
