@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceBaseName": {
+      "value": "bot${{RESOURCE_SUFFIX}}"
+    },
+    "modelProvider": {
+      "value": "${{MODEL_PROVIDER}}"
+    },
+    "anthropicApiKey": {
+      "value": "${{SECRET_ANTHROPIC_API_KEY}}"
+    },
+    "anthropicModel": {
+      "value": "${{ANTHROPIC_MODEL}}"
+    },
+    "anthropicBaseUrl": {
+      "value": "${{ANTHROPIC_BASE_URL}}"
+    },
+    "azureOpenAIEndpoint": {
+      "value": "${{AZURE_OPENAI_ENDPOINT}}"
+    },
+    "azureOpenAIApiKey": {
+      "value": "${{SECRET_AZURE_OPENAI_API_KEY}}"
+    },
+    "azureOpenAIDeployment": {
+      "value": "${{AZURE_OPENAI_DEPLOYMENT}}"
+    },
+    "webAppSKU": {
+      "value": "F1"
+    },
+    "botDisplayName": {
+      "value": "TBP Coach"
+    }
+  }
+}

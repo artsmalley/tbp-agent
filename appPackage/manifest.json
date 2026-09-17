@@ -1,0 +1,70 @@
+{
+    "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.29/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.29",
+    "version": "1.2.0",
+    "id": "${{TEAMS_APP_ID}}",
+    "developer": {
+        "name": "Art of Lean",
+        "websiteUrl": "https://www.artoflean.com",
+        "privacyUrl": "https://github.com/artsmalley/tbp-agent#data-handling",
+        "termsOfUseUrl": "https://github.com/artsmalley/tbp-agent/blob/main/LICENSE"
+    },
+    "icons": {
+        "color": "color.png",
+        "outline": "outline.png"
+    },
+    "name": {
+        "short": "TBP Coach${{APP_NAME_SUFFIX}}",
+        "full": "TBP Coach — Toyota 8-step problem-solving coach"
+    },
+    "description": {
+        "short": "Coaches you through your own problem with the Toyota 8-step method.",
+        "full": "A problem-solving coach using the Toyota Business Practices 8-step method. It guides one step at a time, leads with questions, and does not hand over root causes or countermeasures. Bring a fresh problem or paste in an existing A3 or photo for review. By Art Smalley, Art of Lean."
+    },
+    "accentColor": "#FFFFFF",
+    "supportsChannelFeatures": "tier1",
+    "copilotAgents": {
+        "customEngineAgents": [
+            {
+                "type": "bot",
+                "id": "${{BOT_ID}}"
+            }
+        ]
+    },
+    "bots": [
+        {
+            "botId": "${{BOT_ID}}",
+            "scopes": [
+                "copilot",
+                "personal",
+                "team"
+            ],
+            "supportsFiles": true,
+            "isNotificationOnly": false,
+            "supportsTargetedMessages": false,
+            "commandLists": [
+                {
+                    "scopes": [
+                        "copilot",
+                        "personal"
+                    ],
+                    "triggers": ["mention"],
+                    "commands": [
+                        {
+                            "title": "How can you help me?",
+                            "description": "How can you help me?"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "composeExtensions": [],
+    "configurableTabs": [],
+    "staticTabs": [],
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ],
+    "validDomains": []
+}
