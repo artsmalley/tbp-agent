@@ -259,4 +259,4 @@ Open an issue here, or contact Art Smalley through [artoflean.com](https://artof
 
 ## License
 
-Code: [MIT](LICENSE). The coaching method in `skill/SKILL.md`: [CC BY 4.0](https://github.com/artsmalley/skills/blob/main/LICENSE.md), credit Art Smalley.
+Code: [MIT](LICENSE). The coaching method in `skill/SKILL.md`: [CC BY 4.0](skill/LICENSE.md), credit Art Smalley.
