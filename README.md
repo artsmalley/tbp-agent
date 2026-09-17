@@ -1,6 +1,6 @@
 # TBP Coach for Microsoft Teams
 
-A problem-solving coach that lives in Teams and guides a person through **their own real problem** using the Toyota Business Practices (TBP) 8-step method. It works one step at a time, leads with questions, and never hands over the root cause or the countermeasure. That discipline is the method.
+A problem-solving coach that lives in Teams and guides a person through **their own real problem** using the Toyota Business Practices (TBP) 8-step method. It works one step at a time, leads with questions, and never hands over the root cause or the countermeasure.
 
 Built by [Art Smalley](https://artoflean.com), author of *Four Types of Problems*, *Understanding A3 Thinking*, and *Toyota Kaizen Methods*. The coaching behavior is the open-source [tbp-coach skill](https://github.com/artsmalley/skills); this repository is the Teams packaging of it, built on the Microsoft 365 Agents SDK so it can be deployed inside your own tenant.
 
@@ -22,7 +22,7 @@ The eight steps, in the order the coach enforces: clarify the problem, break dow
 
 ## How it is built
 
-Small on purpose. About ten short source files, no database, no external services beyond the model endpoint you configure.
+About ten short source files, no database, no external services beyond the model endpoint you configure.
 
 ```
 skill/SKILL.md            The coach. Plain markdown; the whole behavior lives here.
@@ -41,7 +41,7 @@ The coaching flow is: Teams → your Azure App Service (this code) → your conf
 
 ## Data handling
 
-Written for the IT and security review, because these are the questions that get asked.
+Answers for IT and security review.
 
 | Question | Answer |
 |---|---|
@@ -90,11 +90,11 @@ Pick one and get its key and endpoint. Provisioning this repository creates the 
 | **Claude direct from Anthropic** | `MODEL_PROVIDER=anthropic`, `ANTHROPIC_MODEL=claude-opus-4-8`, `ANTHROPIC_BASE_URL=` (blank) | `SECRET_ANTHROPIC_API_KEY` |
 | **Azure OpenAI** | `MODEL_PROVIDER=azure-openai`, `AZURE_OPENAI_ENDPOINT=https://<resource>.openai.azure.com`, `AZURE_OPENAI_DEPLOYMENT=<deployment name>` | `SECRET_AZURE_OPENAI_API_KEY` |
 
-### What works, honestly
+### Tested configurations
 
-- **Tested:** Claude Opus 4.8 (`claude-opus-4-8`) through Azure AI Foundry. That is what the author runs and what the screenshot above shows.
+- **Tested:** Claude Opus 4.8 (`claude-opus-4-8`) through Azure AI Foundry. This is the configuration shown in the screenshot above.
 - **Any current Claude model works** by changing `ANTHROPIC_MODEL`. Sonnet is faster and about half the price of Opus at the same generation, and is a sound choice for a coach that asks one question per turn. Opus reads a difficult A3 photo more insightfully. Claude Opus 5 and Sonnet 5 think before they answer by default; that improves the coaching and adds a few seconds per reply.
-- **Wired but not yet tested by the author:** Azure OpenAI. The adapter uses the current Azure chat API and should work with GPT-5 family deployments, including images. You would be the first to run it; report what you find.
+- **Wired but not yet tested by the author:** Azure OpenAI. The adapter uses the current Azure chat API and should work with GPT-5 family deployments, including images.
 - **Not wired:** Gemini, OpenAI direct, local models. Each needs a new adapter in `src/providers/` (about 80 lines, use the Azure OpenAI one as the template).
 
 ### 3. Configure
@@ -217,7 +217,7 @@ The startup line looks like `[skill] loaded .../skill/SKILL.md (7813 chars)`; th
 
 ## Sessions and memory: what happens without storage
 
-This version has no database. Read this before the pilot so nobody is surprised.
+This version has no database.
 
 **Where a session lives.** Each conversation's history is a list in the running program's memory. Teams keeps the chat transcript on screen, but the bot never reads it back; it only knows what is in its own list.
 
@@ -242,7 +242,7 @@ This version has no database. Read this before the pilot so nobody is surprised.
 
 *How it would work.* One storage account with one container, created by the Bicep and written to by the app's existing managed identity, so no new keys or secrets. Each conversation's history is saved as one small JSON document keyed by the Teams conversation id, read at the start of every turn and written at the end. In-memory remains the fallback when the storage setting is blank, so a deployment without storage can turn it on later by setting one value and running provision again. About half a day of work including testing.
 
-*Recommendation.* Run the first pilot without it. Let the learners tell you whether they miss it, and settle the three questions above before you switch it on.
+*Recommendation.* Run the first pilot without it. Decide after learner feedback, and settle the three questions above before switching it on.
 
 ## Known limits
 
