@@ -16,7 +16,7 @@ Built by [Art Smalley](https://artoflean.com), author of *Four Types of Problems
 - **Data you provide:** it will help with stratification, Pareto, trends, and what the data suggests. It will not invent data you have not given it.
 - **Photos:** send JPEG, PNG, GIF, or WebP pictures of your A3 or chart—up to three per message, at most 4 MB each. If several images are too large together, the coach asks you to send the omitted image separately or use smaller copies. Images are not automatically resized.
 - **Documents:** PDF, Word, and Excel attachments are not supported. Paste the relevant text or send screenshots.
-- **Reset:** type `start over` to clear the bot's in-memory session. This does not delete the Teams chat transcript, uploaded files, or data retained by the model provider.
+- **Reset:** type `start over` to clear the agent's in-memory session. This does not delete the Teams chat transcript, uploaded files, or data retained by the model provider.
 
 The eight steps, in the order the coach enforces: clarify the problem, break down the problem, set a target, analyze the root cause, develop countermeasures, see countermeasures through, evaluate both results and process, standardize successful processes.
 
@@ -46,8 +46,8 @@ Answers for IT and security review.
 | Question | Answer |
 |---|---|
 | Where does the code run? | An Azure App Service in **your** subscription and tenant, provisioned by the Bicep in `infra/`. |
-| Where do conversations go? | The bot sends conversation context and supported images to the model endpoint you configure: Claude via Microsoft Foundry (formerly Azure AI Foundry), Azure OpenAI, or Anthropic's API directly. Processing location and retention depend on the provider and deployment you choose; using an Azure endpoint does not by itself mean all processing stays within your tenant or region. |
-| What does the bot store? | Conversation history is held **in memory** on the App Service, keyed by Teams conversation id. The model is sent the most recent 60 messages of a conversation. The application does not persist conversation history to disk or a database. A restart, a redeploy, or an idle shutdown clears every session (see "Known limits"). Teams transcripts, uploaded files, and any provider retention are separate from this in-memory history. |
+| Where do conversations go? | The agent sends conversation context and supported images to the model endpoint you configure: Claude via Microsoft Foundry (formerly Azure AI Foundry), Azure OpenAI, or Anthropic's API directly. Processing location and retention depend on the provider and deployment you choose; using an Azure endpoint does not by itself mean all processing stays within your tenant or region. |
+| What does the agent store? | Conversation history is held **in memory** on the App Service, keyed by Teams conversation id. The model is sent the most recent 60 messages of a conversation. The application does not persist conversation history to disk or a database. A restart, a redeploy, or an idle shutdown clears every session (see "Known limits"). Teams transcripts, uploaded files, and any provider retention are separate from this in-memory history. |
 | What about images? | Up to three images per message, at most 4 MB each, validated by file signature. Downloads stop if they exceed 4 MB or take longer than 15 seconds per image. Each model request includes at most 12 MB of encoded image data across new and retained images. Images from at most the three most recent image turns are retained; the oldest images are removed first when the byte budget is exceeded, leaving a text marker. Limits use decimal MB (1 MB = 1,000,000 bytes). |
 | Where is the model key stored? | As an App Service application setting, written by the Bicep at provision time and encrypted at rest by Azure. It is never in the code, the package, or git. For production, move it to a Key Vault reference; the setting name stays the same. |
 | Is any data sent to Art of Lean? | No. The application has no Art of Lean telemetry or analytics and sends no conversations to the author. Microsoft services and the configured model provider handle data under their applicable terms. |
@@ -60,20 +60,20 @@ Before using company information, have your IT team confirm the model deployment
 - **Azure OpenAI:** Microsoft's applicable service and data-protection terms apply. Processing geography and data handling depend on the deployment type and enabled features. See [Microsoft's Azure OpenAI data-privacy documentation](https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/data-privacy).
 - **Anthropic's API directly:** Anthropic's applicable commercial and data-processing terms and retention policies apply. See [Anthropic's API data-retention documentation](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention).
 
-`start over` resets the bot's in-memory session; it is not a deletion request to Microsoft or the model provider. Teams transcripts and uploaded files remain subject to your organization's Microsoft 365 retention policies, and provider-held data remains subject to the provider's applicable retention terms.
+`start over` resets the agent's in-memory session; it is not a deletion request to Microsoft or the model provider. Teams transcripts and uploaded files remain subject to your organization's Microsoft 365 retention policies, and provider-held data remains subject to the provider's applicable retention terms.
 
 ## Deploy in your tenant
 
 You need a Microsoft 365 tenant where you can sideload or admin-publish a Teams app, an Azure subscription, and a model endpoint. Expect one to two hours the first time.
 
-Each company deploys its own copy into its own Azure subscription and generates its own Teams app package. An app package from the author or another company points to that deployment's bot; it does not create a bot in your environment.
+Each company deploys its own copy into its own Azure subscription and generates its own Teams app package. An app package from the author or another company points to that deployment's agent; it does not create an agent in your environment.
 
 ### 1. Prerequisites
 
 - [Git](https://git-scm.com/downloads), to clone the repository
 - [Node.js](https://nodejs.org/) 22
 - [Microsoft 365 Agents Toolkit](https://aka.ms/teams-toolkit) for VS Code, or its CLI (`npm install -g @microsoft/m365agentstoolkit-cli`)
-- An Azure subscription associated with the same Microsoft Entra tenant as the target Microsoft 365 organization. This template uses a user-assigned managed identity for a single-tenant bot. See [Microsoft's authentication guidance](https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/microsoft-authentication-library-configuration-options).
+- An Azure subscription associated with the same Microsoft Entra tenant as the target Microsoft 365 organization. This template uses a user-assigned managed identity for a single-tenant agent. See [Microsoft's authentication guidance](https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/microsoft-authentication-library-configuration-options).
 - Deployment permissions to create an App Service plan, App Service, user-assigned managed identity, and Azure Bot in the chosen resource group, and assign that identity to the App Service. If IT creates the resource group for you, ask for deployment access to it; otherwise you also need permission to create the group.
 - A Microsoft 365 account permitted to create the app in Teams Developer Portal, plus a Teams administrator who can approve it for the pilot users or enable their custom-app uploads
 - A model deployment or direct API account with a working key, available quota, and billing arranged by your organization. Model usage is billed separately from the App Service, including on the free hosting tier.
@@ -82,7 +82,7 @@ Before starting, agree with IT on the target tenant, Azure subscription, resourc
 
 ### 2. Choose a model provider
 
-Pick one and get its key and endpoint. Provisioning this repository creates the bot's hosting and registration; it does **not** create the model endpoint. For Foundry or Azure OpenAI, deploy an available model first and copy the endpoint and credentials from that resource. Confirm it can answer a test prompt in the provider's playground. For Anthropic direct, confirm your API account has access to the model you select.
+Pick one and get its key and endpoint. Provisioning this repository creates the agent's hosting and Azure Bot registration; it does **not** create the model endpoint. For Foundry or Azure OpenAI, deploy an available model first and copy the endpoint and credentials from that resource. Confirm it can answer a test prompt in the provider's playground. For Anthropic direct, confirm your API account has access to the model you select.
 
 | Provider | Set in `env/.env.dev` | Key in `env/.env.dev.user` |
 |---|---|---|
@@ -153,7 +153,7 @@ Verify with a pilot user's account: open the app in personal chat, say hello, th
 
 ### Running locally first
 
-To try the coaching locally before provisioning Azure hosting, the Toolkit's **Playground** runs the bot in a browser without a Teams tenant. You still need a working model endpoint and key; model requests use that provider and incur its normal charges.
+To try the coaching locally before provisioning Azure hosting, the Toolkit's **Playground** runs the agent in a browser without a Teams tenant. You still need a working model endpoint and key; model requests use that provider and incur its normal charges.
 
 From the repository folder, create the secret file once:
 
@@ -172,8 +172,8 @@ Set the provider, model, and endpoint values in `env/.env.playground` using the 
 | Toolkit reports a missing environment variable | Keep all variables from the supplied environment and secret templates, including unused provider variables with blank values. Check that you are editing files for the selected environment (`dev` or `playground`). |
 | Users cannot upload or find the app | Ask the Teams administrator to check custom-app upload settings or app availability for those users. Confirm they are using the target organization's Teams account. |
 | App installs but gives no reply, or Teams says “Failed to send” | Confirm Deploy succeeded and the App Service is running. Check its logs using the section below. In Azure Bot configuration, verify the messaging endpoint is `https://<BOT_DOMAIN>/api/messages` and the Teams channel is enabled. Confirm the uploaded package belongs to this deployment. |
-| Bot says “Something went wrong reaching the model” | Inspect App Service logs for the underlying error. Check the selected provider, key, endpoint, model/deployment name, and quota. Authentication errors, unavailable models, and rate limits require different fixes. Azure runtime values are in the App Service environment variables/application settings; editing a local `.env` file and running Deploy does not update them. |
-| Text works but an attachment does not | First try a small JPEG or PNG in personal Teams chat. Read the bot's attachment message and application logs. Playground cannot download Teams attachments. |
+| Agent says “Something went wrong reaching the model” | Inspect App Service logs for the underlying error. Check the selected provider, key, endpoint, model/deployment name, and quota. Authentication errors, unavailable models, and rate limits require different fixes. Azure runtime values are in the App Service environment variables/application settings; editing a local `.env` file and running Deploy does not update them. |
+| Text works but an attachment does not | First try a small JPEG or PNG in personal Teams chat. Read the agent's attachment message and application logs. Playground cannot download Teams attachments. |
 
 When asking for help, include the failed step and a redacted error message. Remove keys, access tokens, attachment download URLs, and company conversation content from shared logs.
 
@@ -202,9 +202,9 @@ The coaching method improves over time. To update:
 
 The version history and what changed in each release is in that repository's [CHANGELOG](https://github.com/artsmalley/skills/blob/main/CHANGELOG.md). If you have adapted the skill for your organization, keep your edits in a separate section at the bottom of the file so a merge stays easy.
 
-### Seeing the bot's logs
+### Seeing the agent's logs
 
-The App Service ships with application logging off. To watch the bot's console output, including the startup line that confirms the skill file loaded, turn it on once and then stream:
+The App Service ships with application logging off. To watch the agent's console output, including the startup line that confirms the skill file loaded, turn it on once and then stream:
 
 These commands require the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli), which is separate from Toolkit. Sign in with `az login --tenant <tenant ID>` and select the deployment subscription with `az account set --subscription <subscription ID>`. Find the App Service name in Azure Portal or in `BOT_AZURE_APP_SERVICE_RESOURCE_ID` in `env/.env.dev` (the segment after `/sites/`).
 
@@ -219,7 +219,7 @@ The startup line looks like `[skill] loaded .../skill/SKILL.md (7813 chars)`; th
 
 This version has no database.
 
-**Where a session lives.** Each conversation's history is a list in the running program's memory. Teams keeps the chat transcript on screen, but the bot never reads it back; it only knows what is in its own list.
+**Where a session lives.** Each conversation's history is a list in the running program's memory. Teams keeps the chat transcript on screen, but the agent never reads it back; it only knows what is in its own list.
 
 **When the list is lost.** Whenever the program stops:
 
