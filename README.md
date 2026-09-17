@@ -192,6 +192,19 @@ This is a standard version of the eight-step method, similar in structure to Toy
 
 Keep your edits in a separate section at the bottom of the file so a merge with a newer upstream version stays easy. The method's version history is in the [skills repository CHANGELOG](https://github.com/artsmalley/skills/blob/main/CHANGELOG.md).
 
+## Company knowledge: not built yet
+
+This version carries no product, process, or equipment knowledge. It coaches the method; the learner supplies the facts. There is no retrieval, no document index, and no folder of knowledge files. Adding company material to `skill/SKILL.md` works for a few pages of terminology or standards, but it is not the path for troubleshooting guides, process standards, or machine documentation, because the whole file is sent to the model on every turn.
+
+Company knowledge is the logical next build phase after a pilot of the current version. The intended shape:
+
+- Documents stay where the organization keeps them, a SharePoint library or a storage container in the same tenant.
+- Azure AI Search indexes them.
+- On each turn the agent retrieves the few passages relevant to the learner's problem and includes them in the model call. Nothing leaves the tenant.
+- The retrieved material sharpens the coach's questions. It does not turn the coach into an answer engine; the coaching rules in `skill/SKILL.md` still apply.
+
+This raises the same governance questions as conversation storage: who can read the index, how it is updated, and how long it is kept. Run the pilot first. The problems the pilot users bring, and the knowledge they wish the coach had, are the specification for this phase.
+
 ## Updating the coach
 
 The coaching method improves over time. To update:
