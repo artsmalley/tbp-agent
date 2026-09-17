@@ -268,7 +268,7 @@ This version has no database.
 
 ## Questions
 
-Open an issue here, or contact Art Smalley through [artoflean.com](https://artoflean.com).
+Open an issue in this repository.
 
 ## License
 
