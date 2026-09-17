@@ -177,9 +177,20 @@ Set the provider, model, and endpoint values in `env/.env.playground` using the 
 
 When asking for help, include the failed step and a redacted error message. Remove keys, access tokens, attachment download URLs, and company conversation content from shared logs.
 
-## Changing how it coaches
+## Customizing for your organization
 
-The whole coaching behavior is `skill/SKILL.md`, a plain markdown file. If you want a different opening, a different tone, your company's problem-solving template instead of the eight steps, or a house style, edit that file and run **Deploy** again. Nothing in the TypeScript decides how the coach behaves. Keep your edits in a separate section at the bottom of the file so a merge with a newer upstream version stays easy.
+This is a standard version of the eight-step method, similar in structure to Toyota Business Practices. It is not endorsed by or affiliated with Toyota. Most companies already have their own problem-solving template and their own names for the steps, and the coach works better when it speaks that language. We suggest you rename it and adapt the content to your organization.
+
+**Rename the app.** Edit `appPackage/manifest.json`: `name.short`, `name.full`, and the two `description` fields. Replace `appPackage/color.png` and `appPackage/outline.png` with your own icons. Change the `developer` block so the Teams "About" card shows your organization. Then rebuild the package and re-publish.
+
+**Change the steps and the content.** The whole coaching behavior is `skill/SKILL.md`, a plain markdown file. Nothing in the TypeScript decides how the coach behaves. Edit that file and run **Deploy** again to change:
+
+- the step names, count, and order, so they match your company's template
+- the opening message and the coach's tone
+- the questions it asks at each step and what it treats as "done" for a step
+- company terminology, example problems, and any house rules
+
+Keep your edits in a separate section at the bottom of the file so a merge with a newer upstream version stays easy. The method's version history is in the [skills repository CHANGELOG](https://github.com/artsmalley/skills/blob/main/CHANGELOG.md).
 
 ## Updating the coach
 
