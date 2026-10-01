@@ -51,6 +51,7 @@ Answers for IT and security review.
 | What about images? | Up to three images per message, at most 4 MB each, validated by file signature. Downloads stop if they exceed 4 MB or take longer than 15 seconds per image. Each model request includes at most 12 MB of encoded image data across new and retained images. Images from at most the three most recent image turns are retained; the oldest images are removed first when the byte budget is exceeded, leaving a text marker. Limits use decimal MB (1 MB = 1,000,000 bytes). |
 | Where is the model key stored? | As an App Service application setting, written by the Bicep at provision time and encrypted at rest by Azure. It is never in the code, the package, or git. For production, move it to a Key Vault reference; the setting name stays the same. |
 | Is any data sent to Art of Lean? | No. The application has no Art of Lean telemetry or analytics and sends no conversations to the author. Microsoft services and the configured model provider handle data under their applicable terms. |
+| What Microsoft 365 permissions does it need? | Only the Teams basics in the manifest: `identity` and `messageTeamMembers`. There is no single sign-on, no Microsoft Graph access, and no resource-specific consent. The agent sees only the messages and images sent to it. Provisioning creates a managed identity, an App Service plan and web app, and an Azure Bot with its Teams channel in your subscription. |
 | Who can install it? | Whoever your Teams admin allows. The app package is uploaded through the Teams admin center or sideloaded for a pilot group. |
 | Can we rename it? | Yes. Name, description, and icons are in `appPackage/`. The coach's own voice is in `skill/SKILL.md`. Both are yours to edit. |
 
@@ -263,7 +264,7 @@ This version has no database.
 - **Sessions do not survive a restart or an idle shutdown.** See "Sessions and memory" above. On F1 the first message after a quiet spell also takes ten to twenty seconds while the app starts.
 - **Paid tiers stay warm.** Set `webAppSKU` in `infra/azure.parameters.json` to B1 or higher and the Bicep turns Always On on, which stops the idle unload. Sessions then last until the next deploy or restart.
 - **The model sees the last 60 messages** of a conversation, about 30 exchanges. Older turns drop off the model's view; the chat in Teams keeps them. Raise `MAX_HISTORY_MESSAGES` in `src/agent.ts` if you want a longer memory, at a higher cost per turn.
-- **Group chats and channels** are enabled in the manifest but the coach is designed for one learner at a time. Personal chat is the intended use.
+- **Team channels** are enabled in the manifest, but the coach is designed for one learner at a time. In a channel, everyone replying in the same thread shares one coaching session, and `start over` does not work after an @mention. Group chats are not enabled. Personal chat is the intended use; to turn channels off, remove `team` from the bot's `scopes` in `appPackage/manifest.json`.
 - **Replies are capped at 4,096 tokens** per turn, roughly 3,000 words, and that number includes any thinking the model does before answering. The skill keeps real replies to a few sentences, so the cap is a safety ceiling, not a target. Do not set it below about 2,000 on a model that thinks before answering, or replies can be cut off.
 
 ## Questions
